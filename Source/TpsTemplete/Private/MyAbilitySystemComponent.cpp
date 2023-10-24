@@ -11,12 +11,10 @@ void UMyAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Input
 	{
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
-			FString Aname = AbilitySpec.Ability.GetName();
 			if (AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)))
 			{
 				InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
 				InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
-				UE_LOG(LogTemp, Warning, TEXT("Ability %s"), *Aname);
 
 			}
 		}

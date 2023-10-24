@@ -43,8 +43,6 @@ void FMyAbilitySet_GrantedHandles::TakeFromAbilitySystem(UMyAbilitySystemCompone
 void UMyAbilitySet::GiveToAbilitySystem(UMyAbilitySystemComponent* ASC, FMyAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject) const
 {
 	check(ASC);
-	// Log a message to indicate that the function is executed
-	UE_LOG(LogTemp, Warning, TEXT("GiveToAbilitySystem function executed."));
 
 	if (!ASC->IsOwnerActorAuthoritative())
 	{

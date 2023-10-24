@@ -51,8 +51,7 @@ void UMyEnhancedInputComponent::BindAbilityActions(const UInputConfig* InputConf
 
 			if (PressedFunc)
 			{
-				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag).GetHandle());				
-				UE_LOG(LogTemp, Warning, TEXT("BindAbilityActions.PressedFunc function executed."));
+				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag).GetHandle());					
 			}
 
 			if (ReleasedFunc)
