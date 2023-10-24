@@ -10,6 +10,7 @@
 #include "MyAbilitySystemComponent.h"
 #include "MyAttributeSet.h"
 #include "MyAbilitySet.h"
+#include "BuffSystem.h"
 #include "Projectile.h"
 #include "TpsTempleteCharacter.generated.h"
 
@@ -43,6 +44,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	UMyAbilitySet* AbilitySet;
 
+
 	ATpsTempleteCharacter();
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -56,6 +58,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
 	UMyAbilitySystemComponent* GetMyAbilitySystemComponent() const { return AbilitySystem; }
 
+	
+	void ApplyBuffByName(const FString BuffName);
+	void RemoveBuffByName(const FString BuffName);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability", meta = (AllowPrivateAccess))
@@ -63,8 +68,11 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability", meta = (AllowPrivateAccess))
 	TObjectPtr<UMyAttributeSet> AttributeSet;
-
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	TObjectPtr<UBuffSystem> BuffSystem;
+
+	TArray<FString> AppliedBuffs;
 
 protected:
 
@@ -90,6 +98,14 @@ protected:
 		
 	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
+	
+	UFUNCTION()
+	void HandleBuffApplied(const FString& BuffName);
+	
+	UFUNCTION()
+	void HandleBuffRemoved(const FString& BuffName);
+
+
 
 public:
 	/** Returns CameraBoom subobject **/

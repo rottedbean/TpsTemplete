@@ -64,6 +64,11 @@ ATpsTempleteCharacter::ATpsTempleteCharacter()
 	AbilitySystem->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	AttributeSet = CreateDefaultSubobject<UMyAttributeSet>(TEXT("AttributeSet"));
+
+	BuffSystem = CreateDefaultSubobject<UBuffSystem>(TEXT("BuffSystem"));
+
+	BuffSystem->OnBuffApplied.AddDynamic(this, &ATpsTempleteCharacter::HandleBuffApplied);
+	BuffSystem->OnBuffRemoved.AddDynamic(this, &ATpsTempleteCharacter::HandleBuffRemoved);
 	
 }
 
@@ -82,6 +87,7 @@ void ATpsTempleteCharacter::BeginPlay()
 	}
 
 	GrantAbility();
+	
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -161,12 +167,11 @@ void ATpsTempleteCharacter::Input_Fire(const FInputActionValue& InputActionValue
 
 		if (NewProjectile)
 		{
-			UPrimitiveComponent* ProjectileMesh = Cast<UPrimitiveComponent>(NewProjectile->GetComponentByClass(UPrimitiveComponent::StaticClass()));
+			UProjectileMovementComponent* ProjectileMovement = NewProjectile->ProjectileMovement;
 
-			if (ProjectileMesh)
+			if (ProjectileMovement)
 			{
-				FVector ForceVector = FVector(1000.0f, 0.0f, 0.0f); // Set the force direction and magnitude
-				ProjectileMesh->AddForce(ForceVector, NAME_None, false);
+				ProjectileMovement->AddForce(GetOwner()->GetActorForwardVector() * 10000.0f);
 			}
 		}
 	}
@@ -211,11 +216,34 @@ void ATpsTempleteCharacter::GrantAbility()
 {
 	if (AbilitySet)
 	{
-		AbilitySet->GiveToAbilitySystem(AbilitySystem, nullptr);
-		UE_LOG(LogTemp, Warning, TEXT("GrantAbility function executed."));
-
-		
+		AbilitySet->GiveToAbilitySystem(AbilitySystem, nullptr);		
 	}
+}
+
+void ATpsTempleteCharacter::ApplyBuffByName(const FString BuffName)
+{
+	// 버프 시스템에 버프 적용 요청
+	BuffSystem->ApplyBuff(this, BuffName);
+}
+
+void ATpsTempleteCharacter::RemoveBuffByName(const FString BuffName)
+{
+	// 버프 시스템에 버프 제거 요청
+	BuffSystem->RemoveBuff(this, BuffName);
+}
+
+void ATpsTempleteCharacter::HandleBuffApplied(const FString& BuffName)
+{
+	// 버프가 적용될 때 호출되는 함수
+	// 처리할 동작을 여기에 추가		
+	AppliedBuffs.Add(BuffName);
+}
+
+void ATpsTempleteCharacter::HandleBuffRemoved(const FString& BuffName)
+{
+	// 버프가 제거될 때 호출되는 함수
+	// 처리할 동작을 여기에 추가	
+	AppliedBuffs.Remove(BuffName);
 }
 
 UAbilitySystemComponent* ATpsTempleteCharacter::GetAbilitySystemComponent() const
